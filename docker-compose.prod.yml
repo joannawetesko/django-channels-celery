@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  web:
+    build: &web
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: daphne -b 0.0.0.0 -p 8001 boilerplate.asgi:application
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    expose:
+      - 8001
+    env_file: &envfile ./.env.prod
+    depends_on:
+      - db
+      - redis
+    links:
+      - redis
+
+  db:
+    image: postgres:11.0
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=application_database_prod
+      - POSTGRES_USER=application_database_prod
+      - POSTGRES_PASSWORD=application_database_prod
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build: *web
+    command: 'celery -A boilerplate worker -l info'
+    depends_on:
+      - web
+      - rabbitmq
+      - db
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

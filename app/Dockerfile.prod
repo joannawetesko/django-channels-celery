@@ -1,0 +1,23 @@
+FROM python:3.7.0-alpine
+WORKDIR /usr/src/app
+
+ENV PYTHONWRITEBYTECODE=1 PYTHONBUFFERED=1 HOME=/home/app APP_HOME=/home/app/web
+
+COPY . /usr/src/app
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+RUN apk update && \
+        apk add postgresql-dev gcc python3-dev musl-dev libffi-dev libressl-dev python3-dev
+RUN pip install --upgrade pip \
+         && pip install -r requirements.txt
+RUN mkdir -p /home/app \
+         && addgroup -S app \
+         && adduser -S app -G app \
+         && mkdir $APP_HOME $APP_HOME/staticfiles $APP_HOME/mediafiles
+
+WORKDIR $APP_HOME
+COPY . $APP_HOME
+RUN chown -R app:app $APP_HOME
+USER app
+
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
