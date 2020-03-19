@@ -27,9 +27,11 @@ services:
 
   celery:
     build: *web
-    command: 'celery -A boilerplate worker -l info'
+    command: ["celery", "worker", "-A", "boilerplate", "--loglevel", "INFO"]
+    volumes:
+      - ./app/:/usr/src/app
+    env_file: *envfile
     depends_on:
-      - web
       - rabbitmq
       - db
 

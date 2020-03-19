@@ -27,14 +27,19 @@ services:
       - POSTGRES_USER=application_database_prod
       - POSTGRES_PASSWORD=application_database_prod
 
+  rabbitmq:
+    image: rabbitmq:3.7.8
+
   redis:
     image: redis:alpine
 
   celery:
     build: *web
-    command: 'celery -A boilerplate worker -l info'
+    command: ["celery", "worker", "-A", "boilerplate", "--loglevel", "INFO"]
+    volumes:
+      - ./app/:/usr/src/app
+    env_file: *envfile
     depends_on:
-      - web
       - rabbitmq
       - db
 

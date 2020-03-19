@@ -98,8 +98,7 @@ DATABASES = {
 }
 
 # Celery
-CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672'
-CELERY_IMPORTS = ('example.tasks',)
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER', 'localhost')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
