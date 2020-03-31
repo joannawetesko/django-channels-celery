@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.views.generic import ListView
+from example.models import CeleryTask
 
-# Create your views here.
+class MainView(ListView):
+    model = CeleryTask
+    template_name = 'main.html'

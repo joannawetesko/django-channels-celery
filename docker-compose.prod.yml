@@ -5,7 +5,9 @@ services:
     build: &web
       context: ./app
       dockerfile: Dockerfile.prod
-    command: daphne -b 0.0.0.0 -p 8001 boilerplate.asgi:application
+    command: sh -c "python manage.py collectstatic --noinput -c &&
+                    python manage.py migrate &&
+                    daphne -b 0.0.0.0 -p 8001 boilerplate.asgi:application"
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
@@ -25,7 +27,6 @@ services:
     environment:
       - POSTGRES_DB=application_database_prod
       - POSTGRES_USER=application_database_prod
-      - POSTGRES_PASSWORD=application_database_prod
 
   rabbitmq:
     image: rabbitmq:3.7.8
