@@ -28,9 +28,6 @@ services:
       - POSTGRES_DB=application_database_prod
       - POSTGRES_USER=application_database_prod
 
-  rabbitmq:
-    image: rabbitmq:3.7.8
-
   redis:
     image: redis:alpine
 

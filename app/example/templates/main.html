@@ -4,51 +4,66 @@
 
 <html lang="en">
 <head>
+    <meta charset="utf-8">
 
-  <meta charset="utf-8">
-  <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- no favicon -->
+    <title>Boilerplate django-channels-celery</title>
 
-  <title>Boilerplate django-channels-celery</title>
-
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
-
-  <script src="{% static 'js/jquery-2.2.4.min.js' %}" type="text/javascript"></script>
-  <script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
-
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" /> <!-- no favicon -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="{% static 'js/sockets.js' %}" type="text/javascript"></script>
 </head>
 
 <body>
 
 <div class="container">
 
+    <div class="row mt-5">
+        <h2>Create a new example celery task:</h2>
+    </div>
     <div class="row">
-        <div class="col-4">
-            <h2>Create a new example celery task:</h2>
-            <form id="celery_task_form">
-                <input id="celery_task_name" type="text" class="form-control" placeholder="Task Name">
-                <button type="submit" id="submit_celery_task" class="btn btn-info">Create</button>
+        <div class="col-4 mt-3">
+            <form id="celery_task_form" class="form inline-form">
+                <div class="input-group mb-3">
+                    <input id="celery_task_name" type="text" class="form-control" placeholder="Task name">
+                    <div class="input-group-append">
+                        <button type="submit" id="submit_celery_task" class="btn btn-outline-secondary">Create</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-12">
             <h2>Task List</h2>
-            <table id="celery_task_list" class="table">
-                <thead>
+            <table id="celery_task_list" class="table table-bordered table-hover mt-5">
+                <thead class="thead-light">
                     <tr>
                         <th>Task ID</th>
                         <th>Task Name</th>
                         <th>Date created</th>
+                        <th>Date finished</th>
                         <th>Task Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for task in object_list %}
                     <tr>
-                        <td>task.pk</td>
-                        <td>task.name</td>
-                        <td>task.created</td>
-                        <td>task.status</td>
+                        <td>{{ task.pk }}</td>
+                        <td>{{ task.name }}</td>
+                        <td>{{ task.created|date:"d M Y, G:i:s" }}</td>
+                        <td>{{ task.finished|date:"d M Y, G:i:s" }}</td>
+                        <td>{{ task.status }}</td>
+                        <td><button class="btn btn-danger"
+                                    onclick="cancelTask({{ task.pk }})"
+                                    {% if task.status != 'STARTED' %} disabled {% endif %}>Cancel</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>

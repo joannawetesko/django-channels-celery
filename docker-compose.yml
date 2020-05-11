@@ -3,7 +3,7 @@ version: '3.7'
 services:
   web:
     build: &web ./app
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations example && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./app/:/usr/src/app
     ports:
@@ -18,9 +18,6 @@ services:
       - POSTGRES_DB=application_database
       - POSTGRES_USER=application_database
 
-  rabbitmq:
-    image: rabbitmq:3.7.8
-
   redis:
     image: redis:alpine
 
@@ -31,7 +28,7 @@ services:
       - ./app/:/usr/src/app
     env_file: *envfile
     depends_on:
-      - rabbitmq
+      - redis
       - db
 
 volumes:

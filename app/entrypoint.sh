@@ -10,11 +10,11 @@ then
   echo "Database started"
 fi
 
-echo "Waiting for rabbitMQ"
+echo "Waiting for redis..."
 
-  while ! nc -z "$RABBIT_HOST" "$RABBIT_PORT"; do
+  while ! nc -z "$REDIS_HOST" "$REDIS_PORT"; do
     sleep 0.1
   done
-  echo "rabbitMQ started"
+  echo "Redis started"
 
 exec "$@"

@@ -99,6 +99,7 @@ DATABASES = {
 
 # Celery
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER', 'localhost')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND', 'localhost')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
